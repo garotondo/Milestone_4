@@ -11,6 +11,7 @@ library(dplyr)
 library(readxl)
 library(janitor)
 library(ggplot2)
+library(gt)
 library(tidyverse)
 ```
 
@@ -21,7 +22,10 @@ alumnae <- read_excel("~/Library/Mobile Documents/com~apple~CloudDocs/Harvard/GO
 ```
 
 ```{r}
-#I cleaned letterwinners data and then filtered to exclude NA values in concentration column. I then selected concentration and industry to see the data next to each other.
+#I cleaned letterwinners data and then filtered to exclude NA values in
+#concentration column. I then selected concentration and industry to see the
+#data next to each other. I'm still playing around with the data, but I think I
+#want to plot the correlation between concentration and industry.
 letterwinners%>% 
   clean_names() %>% 
   #subset(select = -x6) %>% 
@@ -31,11 +35,28 @@ letterwinners%>%
          #linked_in != "NA",
          #concentration != "NA",
          #secondary_concentration != "NA") %>% 
-  select(concentration, industry)
+  mutate(concentration = fct_relevel(concentration, c("Economics",
+                               "Government",
+                               "Biology",
+                               "Neurobiology",
+                               "Physics",
+                               "Psychology",
+                               "History of Art & Architecture",
+                               "English",
+                               "History"))) %>% 
+  mutate(industry = fct_relevel(industry, c("Finance",
+                               "Consulting",
+                               "Medicine",
+                               "Athletics Education",
+                               "Education",
+                               "Retail, Consumer Goods"))) %>% 
+  #group_by(concentration, industry)%>% 
+  select(concentration, industry) %>% 
+  gt(rownames_to_stub = FALSE)
 
 letterwinners %>% 
-  ggplot(aes(x = "concentration")) +
-    geom_histogram()
+  ggplot(aes(x = "concentration", y = "industry")) +
+    geom_point()
 
 ```
 
