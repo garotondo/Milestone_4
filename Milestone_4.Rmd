@@ -11,6 +11,7 @@ library(dplyr)
 library(readxl)
 library(janitor)
 library(ggplot2)
+library(fastDummies)
 library(gt)
 library(tidyverse)
 ```
@@ -23,19 +24,63 @@ alumnae <- read_excel("~/Library/Mobile Documents/com~apple~CloudDocs/Harvard/GO
 
 ```{r}
 #I cleaned letterwinners data and then filtered to exclude NA values in
-#concentration column. I then selected concentration and industry to see the
-#data next to each other. I'm still playing around with the data, but I think I
-#want to plot the correlation between concentration and industry.
+#concentration column. I then mutated the concentration column with names of
+#concentrations and the industry column with names of industries, so as to
+#create a gt table, just for my own organization. I then selected concentration
+#and industry to see the data next to each other. I'm still playing around with
+#the data, but I think I want to plot the correlation between concentration and
+#industry to see if there is any relationship between the variables.
 letterwinners%>% 
   clean_names() %>% 
   #subset(select = -x6) %>% 
   #subset(select = -x11) %>% 
-  filter(concentration != "NA") %>% 
-         #industry != "NA",
+  filter(concentration != "NA",
+         industry != "NA") %>% 
          #linked_in != "NA",
          #concentration != "NA",
          #secondary_concentration != "NA") %>% 
-  mutate(concentration = fct_relevel(concentration, c("Economics",
+
+ggplot(aes(x = concentration)) + 
+  geom_bar(aes(stat = "count", fill = industry))
+  
+  dummy <- data.frame(numbers = 1:3,
+                    concentration  = c("Government", "Psychology", "Economics"),
+                    stringsAsFactors = FALSE)
+  
+  #results <- fastDummies::dummy_cols(dummy)
+
+
+  
+  
+  #filter(concentration == c("Government", 
+                            #"Economics", 
+                            #"Psychology"),
+         #industry == c("Finance",
+                       #"Medicine",
+                       #"Consulting"))
+  #group_by(concentration, industry)%>%  
+ 
+
+letterwinners %>% 
+  ggplot(aes(x = "concentration", fill = "industry")) +
+    geom_bar()
+
+```
+
+"English", 
+                            "Neurobiology",
+                            "History of Art & Architecture",
+                            "Sociology",
+                            "Social Studies"
+                            
+                            "Retail, Consumer Goods",
+                       "Nonprofit"
+
+```{r}
+#Possible GT
+letterwinners %>% 
+gt(rownames_to_stub = FALSE)
+mutate(concentration = fct_relevel(concentration, c("Economics",
                                "Government",
                                "Biology",
                                "Neurobiology",
@@ -50,13 +95,5 @@ letterwinners%>%
                                "Athletics Education",
                                "Education",
                                "Retail, Consumer Goods"))) %>% 
-  #group_by(concentration, industry)%>% 
-  select(concentration, industry) %>% 
-  gt(rownames_to_stub = FALSE)
-
-letterwinners %>% 
-  ggplot(aes(x = "concentration", y = "industry")) +
-    geom_point()
-
 ```
 
