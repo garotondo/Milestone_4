@@ -24,76 +24,34 @@ alumnae <- read_excel("~/Library/Mobile Documents/com~apple~CloudDocs/Harvard/GO
 
 ```{r}
 #I cleaned letterwinners data and then filtered to exclude NA values in
-#concentration column. I then mutated the concentration column with names of
-#concentrations and the industry column with names of industries, so as to
-#create a gt table, just for my own organization. I then selected concentration
-#and industry to see the data next to each other. I'm still playing around with
-#the data, but I think I want to plot the correlation between concentration and
-#industry to see if there is any relationship between the variables.
+#concentration and industry columns. I then mutated the concentration column
+#with names of concentrations and the industry column with names of industries,
+#so as to create a gt table, just for my own organization. I decided to make a
+#bar chart because I didn't know how to graph two categorical variables, but I
+#think it actually makes sense because you can see how many alums concentrated
+#in which fields, and which indistries they are in now, which is the goal I had
+#originally. When I originally created the chart, I had the concentrations were
+#on the x-axis, but the titles made the axis crowded, so I used coord_flip flip
+#them. 
+#I still need to create more of the data and figure out which variables I
+#want to use to merge the two data sets. At the end, I want a dataset with
+#names, grad years, concentrations and secondary concentrations, locations,
+#employers, positions, linkedins, and possibly former employers.
+
 letterwinners%>% 
   clean_names() %>% 
-  #subset(select = -x6) %>% 
-  #subset(select = -x11) %>% 
   filter(concentration != "NA",
-         industry != "NA") %>% 
-         #linked_in != "NA",
-         #concentration != "NA",
-         #secondary_concentration != "NA") %>% 
+         industry != "NA") %>%
 
 ggplot(aes(x = concentration)) + 
-  geom_bar(aes(stat = "count", fill = industry))
+  geom_bar(aes(stat = "count", fill = industry)) +
+  coord_flip() +
+  labs(title = "Number of Alums of Particular Concentrations and Their Current Job Industries",
+       x = "Concentration",
+       y = "Number of Concentrators",
+       fill = "Industry")
   
-  dummy <- data.frame(numbers = 1:3,
-                    concentration  = c("Government", "Psychology", "Economics"),
-                    stringsAsFactors = FALSE)
-  
-  #results <- fastDummies::dummy_cols(dummy)
-
-
-  
-  
-  #filter(concentration == c("Government", 
-                            #"Economics", 
-                            #"Psychology"),
-         #industry == c("Finance",
-                       #"Medicine",
-                       #"Consulting"))
-  #group_by(concentration, industry)%>%  
- 
-
-letterwinners %>% 
-  ggplot(aes(x = "concentration", fill = "industry")) +
-    geom_bar()
 
 ```
 
-"English", 
-                            "Neurobiology",
-                            "History of Art & Architecture",
-                            "Sociology",
-                            "Social Studies"
-                            
-                            "Retail, Consumer Goods",
-                       "Nonprofit"
-
-```{r}
-#Possible GT
-letterwinners %>% 
-gt(rownames_to_stub = FALSE)
-mutate(concentration = fct_relevel(concentration, c("Economics",
-                               "Government",
-                               "Biology",
-                               "Neurobiology",
-                               "Physics",
-                               "Psychology",
-                               "History of Art & Architecture",
-                               "English",
-                               "History"))) %>% 
-  mutate(industry = fct_relevel(industry, c("Finance",
-                               "Consulting",
-                               "Medicine",
-                               "Athletics Education",
-                               "Education",
-                               "Retail, Consumer Goods"))) %>% 
-```
 
