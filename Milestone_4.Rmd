@@ -7,4 +7,35 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(readxl)
+library(janitor)
+library(ggplot2)
+library(tidyverse)
 ```
+
+```{r}
+letterwinners <- read_excel("~/Library/Mobile Documents/com~apple~CloudDocs/Harvard/GOV1005 /Milestone_4/alum_data/WLAX_LETTERWINNER_DATA.xlsx")
+
+alumnae <- read_excel("~/Library/Mobile Documents/com~apple~CloudDocs/Harvard/GOV1005 /Milestone_4/alum_data/FoHL_ALumnae_List_10.3.19.xls")
+```
+
+```{r}
+#I cleaned letterwinners data and then filtered to exclude NA values in concentration column. I then selected concentration and industry to see the data next to each other.
+letterwinners%>% 
+  clean_names() %>% 
+  #subset(select = -x6) %>% 
+  #subset(select = -x11) %>% 
+  filter(concentration != "NA") %>% 
+         #industry != "NA",
+         #linked_in != "NA",
+         #concentration != "NA",
+         #secondary_concentration != "NA") %>% 
+  select(concentration, industry)
+
+letterwinners %>% 
+  ggplot(aes(x = "concentration")) +
+    geom_histogram()
+
+```
+
